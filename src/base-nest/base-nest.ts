@@ -1,4 +1,17 @@
-// import { sequelizeProvider } from '../common/sequelize.provider';
+let dbConfig;
+
+try {
+  const fs = require('fs');
+  const dirs = fs.readdirSync('../API/src/common');
+  console.log(dirs);
+
+  dbConfig = require('../src/common/sequelize.provider.ts');
+} catch (error) {
+  console.error(error);
+}
+
+console.log(dbConfig);
+
 const pgStructure = require('pg-structure');
 const Handlebars = require('handlebars');
 const pluralize = require('pluralize');
@@ -75,14 +88,53 @@ function structureModelEsquema(nameSchema) {
   };
 
   pgStructure(config, [nameSchema]).then(db => {
-		createFolderShema(nameSchema);
-		
-		const tables = db.schemas.get(nameSchema).tables;
-	
+    createFolderShema(nameSchema);
+
+    const tables = db.schemas.get(nameSchema).tables;
+
     for (let table of tables.values()) {
       createFolderTable(nameSchema, table.name);
+      createService(table.name);
     }
   });
+}
+
+function createService(tableName) {
+  var source = fs.readFileSync(
+    'src/base-nest/tamplate-nest/middleware.html',
+    'utf8',
+  );
+  var template = Handlebars.compile(source);
+
+  const name = namePrimaryMayus(tableName);
+  const singular = singularword(name);
+  console.log(singular);
+
+  // const data = { name: name, fileName: filName, pluralName: pluralName}
+  // var content   = template(data)
+
+  // const tmpFolder = pluralizeModel(filName, false)
+
+  // verifyFolderExists(folder + tmpFolder)
+  // fs.writeFile(
+  // folder + tmpFolder + '/' + tmpFolder + '.service.ts',
+  // content,
+  //   (err: any) => {
+  //     console.log(err)
+  //   }
+  // )
+}
+
+function singularword(name) {
+  let singular;
+  if (!name.split('es').pop()) {
+    singular = name.substring(0, name.length - 2);
+  }
+
+  if (!name.split('s').pop() && !singular) {
+    singular = name.substring(0, name.length - 1);
+  }
+  return singular;
 }
 
 /**
@@ -123,7 +175,7 @@ function createFolderTable(nameSchema, nameTable) {
  * ejemplo roles_user = RolesUser
  * @todo
  */
-function nameEntityControllerMidelware(string) {
+function namePrimaryMayus(string) {
   const name = string.split('_');
   let newString = '';
   name.forEach(element => {
