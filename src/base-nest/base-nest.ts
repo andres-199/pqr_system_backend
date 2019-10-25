@@ -2,6 +2,7 @@
 const pgStructure = require('pg-structure');
 const Handlebars = require('handlebars');
 const pluralize = require('pluralize');
+var dir = './src/';
 var inquirer = require('inquirer');
 var fs = require('fs');
 
@@ -34,6 +35,14 @@ function esquema() {
     });
 }
 
+function colors() {
+  const chalk = require('chalk');
+  const magenta = chalk.bold.magenta;
+  const green = chalk.bold.green;
+
+  return { magenta, green };
+}
+
 function dataStructureFields() {
   const colsFormat = [];
   colsFormat['smallint'] = 'number';
@@ -56,7 +65,7 @@ function dataStructureFields() {
   return colsFormat;
 }
 
-function structureModelEsquema(schema) {
+function structureModelEsquema(nameSchema) {
   const config = {
     database: 'yonarp',
     user: 'postgres',
@@ -65,13 +74,48 @@ function structureModelEsquema(schema) {
     port: 5432,
   };
 
-  pgStructure(config, [schema]).then(db => {
-    const tables = db.schemas.get(schema).tables;
-		for (let table of tables.values()) {
-			
-		}
-    console.log(tables);
+  pgStructure(config, [nameSchema]).then(db => {
+		createFolderShema(nameSchema);
+		
+		const tables = db.schemas.get(nameSchema).tables;
+	
+    for (let table of tables.values()) {
+      createFolderTable(nameSchema, table.name);
+    }
   });
+}
+
+/**
+ * Crea la carpeta principal
+ * @param nameSchema
+ */
+function createFolderShema(nameSchema) {
+  if (!fs.existsSync(`${dir}${nameSchema}`)) {
+    fs.mkdirSync(`${dir}${nameSchema}`);
+    console.log(
+      '✍ ' +
+        colors().magenta(`Carpeta Creada: src/${nameSchema}`) +
+        colors().green('✔'),
+    );
+  }
+}
+
+/**
+ *  Crea las subcarpetas
+ * @param nameSchema
+ * @param nameTable
+ */
+function createFolderTable(nameSchema, nameTable) {
+  if (!fs.existsSync(`${dir}${nameSchema}/${nameFolders(nameTable)}`)) {
+    fs.mkdirSync(`${dir}${nameSchema}/${nameFolders(nameTable)}`);
+    console.log(
+      '✍ ' +
+        colors().magenta(
+          `Carpeta Creada: src/${nameSchema}/${nameFolders(nameTable)}`,
+        ) +
+        colors().green('✔'),
+    );
+  }
 }
 
 /**
