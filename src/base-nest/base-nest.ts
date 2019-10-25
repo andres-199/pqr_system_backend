@@ -30,7 +30,7 @@ function esquema() {
       },
     ])
     .then(answer => {
-      structureModelEsquema(answer.schema)
+      structureModelEsquema(answer.schema);
     });
 }
 
@@ -63,34 +63,38 @@ function structureModelEsquema(schema) {
     password: 'bdaserti',
     host: '198.74.59.59',
     port: 5432,
-	};
-	
+  };
+
   pgStructure(config, [schema]).then(db => {
-		console.log(db);
-	});
+    const tables = db.schemas.get(schema).tables;
+		for (let table of tables.values()) {
+			
+		}
+    console.log(tables);
+  });
 }
 
 /**
- * cambiar el nombre de la base de datos 
+ * cambiar el nombre de la base de datos
  * ejemplo roles_user = RolesUser
  * @todo
  */
 function nameEntityControllerMidelware(string) {
-	const name = string.split('_')
-	let newString = ''
-	name.forEach(element => {
-		newString += element.charAt(0).toUpperCase() + element.slice(1);
-	});
+  const name = string.split('_');
+  let newString = '';
+  name.forEach(element => {
+    newString += element.charAt(0).toUpperCase() + element.slice(1);
+  });
 
-	return newString
+  return newString;
 }
 
 /**
- * cambiar el nombre de la base de datos 
+ * cambiar el nombre de la base de datos
  * ejemplo roles_user = roles-user
- * @todo 
+ * @todo
  */
 function nameFolders(string) {
-	const newString = string.replace("_", "-")
-	return newString
+  const newString = string.replace('_', '-');
+  return newString;
 }
