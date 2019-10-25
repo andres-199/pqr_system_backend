@@ -69,3 +69,22 @@ function structureModelEsquema(schema) {
 		console.log(db);
 	});
 }
+
+// cambiar el nombre de la base de datos 
+// ejemplo roles_user = RolesUser
+function maysPrimera(string) {
+	const name = string.split('_')
+	let newString = ''
+	name.forEach(element => {
+		newString += element.charAt(0).toUpperCase() + element.slice(1);
+	});
+
+	return newString
+}
+
+// para las carpetas 
+// ejemplo roles_user = roles-user
+function remplace(string) {
+	const newString = string.replace("_", "-")
+	return newString
+}
