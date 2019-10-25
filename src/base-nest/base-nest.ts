@@ -77,17 +77,98 @@ function structureModelEsquema(nameSchema) {
 
   pgStructure(config, [nameSchema]).then(db => {
     createFolderShema(nameSchema);
-
+    const nameTables = [];
     const tables = db.schemas.get(nameSchema).tables;
 
     for (let table of tables.values()) {
+      nameTables.push({ path: table.name, name: namePrimaryMayus(table.name) });
       createFolderTable(nameSchema, table.name);
-			createMiddlewares(nameSchema, table.name);
-			createModulos(nameSchema, table.name);
+      createMiddlewares(nameSchema, table.name);
+      createSubModulos(nameSchema, table.name);
+    }
+
+    createModuloPrincipal(nameSchema, nameTables);
+    routerPrincipal(nameSchema, nameTables);
+  });
+}
+
+/**
+ * Crea el router principal
+ * @param nameSchema, nombre del esquema
+ * @param namesTables, nombre de las tablas
+ */
+function routerPrincipal(nameSchema, namesTables) {
+  var source = fs.readFileSync(
+    'src/base-nest/tamplate-nest/router.html',
+    'utf8',
+  );
+  var template = Handlebars.compile(source);
+
+  const nameModule = namePrimaryMayus(nameSchema);
+  const data = { nameModule, modulos: namesTables };
+  var content = template(data);
+
+  const folder = `${dir}${nameSchema}/${nameFolders(nameSchema)}.router.ts`;
+
+  if (verifyFolderExists(folder)) {
+    return;
+  }
+  fs.writeFile(folder, content, err => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(
+        colors().yellow(
+          `--- Router Creado: src/${nameSchema}/${nameFolders(
+            nameSchema,
+          )}.router.ts`,
+        ) + colors().green('✔'),
+      );
     }
   });
 }
 
+/**
+ * Crea el modulo principal
+ * @param nameSchema, nombre del esquema
+ * @param namesTables, nombre de las tablas
+ */
+function createModuloPrincipal(nameSchema, namesTables) {
+  var source = fs.readFileSync(
+    'src/base-nest/tamplate-nest/module.html',
+    'utf8',
+  );
+  var template = Handlebars.compile(source);
+
+  const nameModule = namePrimaryMayus(nameSchema);
+  const data = { nameModule, modulos: namesTables };
+  var content = template(data);
+
+  const folder = `${dir}${nameSchema}/${nameFolders(nameSchema)}.module.ts`;
+
+  if (verifyFolderExists(folder)) {
+    return;
+  }
+  fs.writeFile(folder, content, err => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(
+        colors().yellow(
+          `--- Modulo Creado: src/${nameSchema}/${nameFolders(
+            nameSchema,
+          )}.module.ts`,
+        ) + colors().green('✔'),
+      );
+    }
+  });
+}
+
+/**
+ *
+ * @param nameSchema, nombre de la esquema
+ * @param tableName, nombre de la tabla
+ */
 function createMiddlewares(nameSchema, tableName) {
   var source = fs.readFileSync(
     'src/base-nest/tamplate-nest/middleware.html',
@@ -104,8 +185,10 @@ function createMiddlewares(nameSchema, tableName) {
   const folder = `${dir}${nameSchema}/${nameFolders(tableName)}/${nameFolders(
     tableName,
   )}.middleware.ts`;
-	
-	if(verifyFolderExists(folder)) { return }
+
+  if (verifyFolderExists(folder)) {
+    return;
+  }
   fs.writeFile(folder, content, err => {
     if (err) {
       console.log(err);
@@ -121,24 +204,31 @@ function createMiddlewares(nameSchema, tableName) {
   });
 }
 
-function createModulos(nameSchema, tableName) {
+/**
+ *
+ * @param nameSchema, nombre de la esquema
+ * @param tableName, nombre de la tabla
+ */
+function createSubModulos(nameSchema, tableName) {
   var source = fs.readFileSync(
-    'src/base-nest/tamplate-nest/module.html',
+    'src/base-nest/tamplate-nest/sub-module.html',
     'utf8',
   );
   var template = Handlebars.compile(source);
 
-	const nameModule = namePrimaryMayus(tableName);
-	const pathRouter = `${nameSchema}/${tableName}`
-  const from = tableName
+  const nameModule = namePrimaryMayus(tableName);
+  const pathRouter = `${nameSchema}/${tableName}`;
+  const from = tableName;
   const data = { nameModule, pathRouter, from };
   var content = template(data);
 
   const folder = `${dir}${nameSchema}/${nameFolders(tableName)}/${nameFolders(
     tableName,
   )}.module.ts`;
-	
-	if(verifyFolderExists(folder)) { return }
+
+  if (verifyFolderExists(folder)) {
+    return;
+  }
   fs.writeFile(folder, content, err => {
     if (err) {
       console.log(err);
@@ -154,6 +244,10 @@ function createModulos(nameSchema, tableName) {
   });
 }
 
+/**
+ *  verifica si exite una ruta
+ * @param path, string
+ */
 function verifyFolderExists(path) {
   if (fs.existsSync(`${path}`)) {
     return true;
@@ -162,6 +256,10 @@ function verifyFolderExists(path) {
   return false;
 }
 
+/**
+ * Convierte una palabra de plural a singular
+ * @param name
+ */
 function singularword(name) {
   let singular;
   if (!name.split('es').pop()) {
