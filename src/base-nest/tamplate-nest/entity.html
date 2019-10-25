@@ -1,0 +1,25 @@
+`import { Table, Model, Column, CreatedAt, UpdatedAt, DataType } from 'sequelize-typescript'
+
+@Table({
+	schema: '${answers.schema}',
+	tableName: '${answers.table}',
+})
+
+export class ${MaysPrimera(answers.entity)} extends Model<${MaysPrimera(answers.entity)}> {
+
+	@Column({
+  	type: DataType.INTEGER,
+  	autoIncrement: true,
+  	primaryKey: true,
+  	unique: true,
+  	field: 'id',
+	})
+	id: number
+${entityFields()}
+
+	@CreatedAt
+	createdAt: Date
+
+	@UpdatedAt
+	updatedAt: Date
+}
