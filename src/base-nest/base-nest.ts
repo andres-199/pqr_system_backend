@@ -70,9 +70,12 @@ function structureModelEsquema(schema) {
 	});
 }
 
-// cambiar el nombre de la base de datos 
-// ejemplo roles_user = RolesUser
-function maysPrimera(string) {
+/**
+ * cambiar el nombre de la base de datos 
+ * ejemplo roles_user = RolesUser
+ * @todo
+ */
+function nameEntityControllerMidelware(string) {
 	const name = string.split('_')
 	let newString = ''
 	name.forEach(element => {
@@ -82,9 +85,12 @@ function maysPrimera(string) {
 	return newString
 }
 
-// para las carpetas 
-// ejemplo roles_user = roles-user
-function remplace(string) {
+/**
+ * cambiar el nombre de la base de datos 
+ * ejemplo roles_user = roles-user
+ * @todo 
+ */
+function nameFolders(string) {
 	const newString = string.replace("_", "-")
 	return newString
 }
