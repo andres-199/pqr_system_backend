@@ -39,8 +39,9 @@ function colors() {
   const chalk = require('chalk');
   const magenta = chalk.bold.magenta;
   const green = chalk.bold.green;
+  const yellow = chalk.bold.yellow;
 
-  return { magenta, green };
+  return { magenta, green, yellow };
 }
 
 function dataStructureFields() {
@@ -81,35 +82,84 @@ function structureModelEsquema(nameSchema) {
 
     for (let table of tables.values()) {
       createFolderTable(nameSchema, table.name);
-      createService(table.name);
+			createMiddlewares(nameSchema, table.name);
+			createModulos(nameSchema, table.name);
     }
   });
 }
 
-function createService(tableName) {
+function createMiddlewares(nameSchema, tableName) {
   var source = fs.readFileSync(
     'src/base-nest/tamplate-nest/middleware.html',
     'utf8',
   );
   var template = Handlebars.compile(source);
 
-  const name = namePrimaryMayus(tableName);
-  const singular = singularword(name);
-  console.log(singular);
+  const nameService = namePrimaryMayus(tableName);
+  const nameEntity = singularword(nameService);
 
-  // const data = { name: name, fileName: filName, pluralName: pluralName}
-  // var content   = template(data)
+  const data = { nameService, nameEntity: nameEntity };
+  var content = template(data);
 
-  // const tmpFolder = pluralizeModel(filName, false)
+  const folder = `${dir}${nameSchema}/${nameFolders(tableName)}/${nameFolders(
+    tableName,
+  )}.middleware.ts`;
+	
+	if(verifyFolderExists(folder)) { return }
+  fs.writeFile(folder, content, err => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(
+        colors().yellow(
+          `--- Middleware Creado: src/${nameSchema}/${nameFolders(
+            tableName,
+          )}/${nameFolders(tableName)}.middleware.ts`,
+        ) + colors().green('✔'),
+      );
+    }
+  });
+}
 
-  // verifyFolderExists(folder + tmpFolder)
-  // fs.writeFile(
-  // folder + tmpFolder + '/' + tmpFolder + '.service.ts',
-  // content,
-  //   (err: any) => {
-  //     console.log(err)
-  //   }
-  // )
+function createModulos(nameSchema, tableName) {
+  var source = fs.readFileSync(
+    'src/base-nest/tamplate-nest/module.html',
+    'utf8',
+  );
+  var template = Handlebars.compile(source);
+
+	const nameModule = namePrimaryMayus(tableName);
+	const pathRouter = `${nameSchema}/${tableName}`
+  const from = tableName
+  const data = { nameModule, pathRouter, from };
+  var content = template(data);
+
+  const folder = `${dir}${nameSchema}/${nameFolders(tableName)}/${nameFolders(
+    tableName,
+  )}.module.ts`;
+	
+	if(verifyFolderExists(folder)) { return }
+  fs.writeFile(folder, content, err => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(
+        colors().yellow(
+          `--- Modulo Creado: src/${nameSchema}/${nameFolders(
+            tableName,
+          )}/${nameFolders(tableName)}.module.ts`,
+        ) + colors().green('✔'),
+      );
+    }
+  });
+}
+
+function verifyFolderExists(path) {
+  if (fs.existsSync(`${path}`)) {
+    return true;
+  }
+
+  return false;
 }
 
 function singularword(name) {
@@ -119,9 +169,9 @@ function singularword(name) {
   }
 
   if (!name.split('s').pop() && !singular) {
-		singular = name.substring(0, name.length - 1);
+    singular = name.substring(0, name.length - 1);
   }
-	return singular;
+  return singular;
 }
 
 /**
