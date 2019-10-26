@@ -5,6 +5,7 @@ const dbConfig = {
   username: 'postgres',
   password: 'bdaserti',
   database: 'practicantes',
+  user: 'postgres',
 };
 
-module.exports = dbConfig;
+module.exports.dbConfig = dbConfig;

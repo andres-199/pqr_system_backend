@@ -29,8 +29,8 @@ function _getModels(path = 'src') {
   return models;
 }
 
-const dbConfig = require('./constants');
-console.log(dbConfig);
+const constants = require('./constants');
+const dbConfig = constants.dbConfig;
 
 export const sequelizeProvider = {
   provide: 'Sequelize',

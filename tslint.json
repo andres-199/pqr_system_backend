@@ -5,6 +5,9 @@
     "no-unused-expression": true
   },
   "rules": {
+    "variable-name":false,
+    "no-console":false,
+    "no-string-literal":false,
     "no-var-requires":false,
     "quotemark": [true, "single"],
     "member-access": [false],
