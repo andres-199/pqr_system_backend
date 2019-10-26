@@ -1,17 +1,3 @@
-let dbConfig;
-
-try {
-  const fs = require('fs');
-  const dirs = fs.readdirSync('../API/src/common');
-  console.log(dirs);
-
-  dbConfig = require('../src/common/sequelize.provider.ts');
-} catch (error) {
-  console.error(error);
-}
-
-console.log(dbConfig);
-
 const pgStructure = require('pg-structure');
 const Handlebars = require('handlebars');
 const pluralize = require('pluralize');
@@ -79,20 +65,14 @@ function dataStructureFields() {
 }
 
 function structureModelEsquema(nameSchema) {
-  const config = {
-    database: 'yonarp',
-    user: 'postgres',
-    password: 'bdaserti',
-    host: '198.74.59.59',
-    port: 5432,
-  };
+  const dbConfig = require('../common/constants.ts');
 
-  pgStructure(config, [nameSchema]).then(db => {
+  pgStructure(dbConfig, [nameSchema]).then(db => {
     createFolderShema(nameSchema);
 
     const tables = db.schemas.get(nameSchema).tables;
 
-    for (let table of tables.values()) {
+    for (const table of tables.values()) {
       createFolderTable(nameSchema, table.name);
       createService(table.name);
     }

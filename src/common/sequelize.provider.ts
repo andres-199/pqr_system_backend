@@ -29,15 +29,9 @@ function _getModels(path = 'src') {
   return models;
 }
 
-const dbConfig: any = {
-  dialect: 'postgres',
-  host: '198.74.59.59',
-  port: 5432,
-  username: 'postgres',
-  password: 'bdaserti',
-  database: 'practicantes',
-};
-export default dbConfig;
+const dbConfig = require('./constants');
+console.log(dbConfig);
+
 export const sequelizeProvider = {
   provide: 'Sequelize',
   useFactory: async () => {
