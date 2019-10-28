@@ -5,6 +5,24 @@ const dir = './src/';
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+const colsFormat = {};
+colsFormat['smallint'] = 'number';
+colsFormat['integer'] = 'number';
+colsFormat['character'] = 'string';
+colsFormat['character varying'] = 'string';
+colsFormat['date'] = 'Date';
+colsFormat['numeric'] = 'number';
+colsFormat['timestamp with time zone'] = 'Date';
+colsFormat['timestamp'] = 'Date';
+colsFormat['time'] = 'Date';
+colsFormat['boolean'] = 'boolean';
+colsFormat['json'] = 'JSON';
+colsFormat['text'] = 'string';
+colsFormat['timestamp without time zone'] = 'Date';
+colsFormat['double precision'] = 'number';
+colsFormat['bigint'] = 'number';
+colsFormat['real'] = 'number';
+
 inquirer
   .prompt([
     {
@@ -17,6 +35,8 @@ inquirer
   .then(answer => {
     if (answer.action === 'Esquema') {
       esquema();
+    } else if (answer.action === 'Componente') {
+      console.log(colors().magenta('Trabajamos en ello... proximamente! 😋'));
     }
   });
 
@@ -43,28 +63,6 @@ function colors() {
   return { magenta, green, yellow };
 }
 
-function dataStructureFields() {
-  const colsFormat = [];
-  colsFormat['smallint'] = 'number';
-  colsFormat['integer'] = 'number';
-  colsFormat['character'] = 'string';
-  colsFormat['character varying'] = 'string';
-  colsFormat['date'] = 'Date';
-  colsFormat['numeric'] = 'number';
-  colsFormat['timestamp with time zone'] = 'Date';
-  colsFormat['timestamp'] = 'Date';
-  colsFormat['time'] = 'Date';
-  colsFormat['boolean'] = 'boolean';
-  colsFormat['json'] = 'JSON';
-  colsFormat['text'] = 'string';
-  colsFormat['timestamp without time zone'] = 'Date';
-  colsFormat['double precision'] = 'number';
-  colsFormat['bigint'] = 'number';
-  colsFormat['real'] = 'number';
-
-  return colsFormat;
-}
-
 function structureModelEsquema(nameSchema) {
   const constants = require('../common/constants.ts');
   const dbConfig = constants.dbConfig;
@@ -79,6 +77,7 @@ function structureModelEsquema(nameSchema) {
       createFolderTable(nameSchema, table.name);
       createMiddlewares(nameSchema, table.name);
       createSubModulos(nameSchema, table.name);
+      createEntity(nameSchema, table);
     }
 
     createModuloPrincipal(nameSchema, nameTables);
@@ -86,8 +85,69 @@ function structureModelEsquema(nameSchema) {
   });
 }
 
-function createEntity() {
-  return;
+function _getColsForEntity(table) {
+  const columns = [];
+  for (const col of table.columns) {
+    const name = col[1].name;
+    const typeInDB = col[1].type;
+    const type = colsFormat[typeInDB];
+
+    if (name !== 'id') {
+      const specialType = type === 'JSON';
+      columns.push({ name, type, specialType });
+    }
+  }
+
+  return columns;
+}
+
+/**
+ * @augments templateName puede ser entity | module | router | ...
+ */
+function _getTemplate(templateName) {
+  const path = `src/base-nest/tamplate-nest/${templateName}.html`;
+  const template = fs.readFileSync(path, 'utf8');
+  return template;
+}
+
+function createEntity(schemaName, table) {
+  /**
+   * set relations
+   */
+  for (const relation of table.hasManyTables) {
+    // todo....
+  }
+
+  const columns = _getColsForEntity(table);
+  const tableName = table.name;
+  const className = namePrimaryMayus(tableName);
+  const context = { schemaName, tableName, columns, className };
+
+  const template = _getTemplate('entity');
+  const builder = Handlebars.compile(template);
+  const entity = builder(context);
+
+  const path = `${dir}${schemaName}/${nameFolders(tableName)}/${nameFolders(
+    tableName,
+  )}.entity.ts`;
+
+  if (verifyFolderExists(path)) {
+    return;
+  }
+
+  fs.writeFile(path, entity, err => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(
+        colors().yellow(
+          `--- Entity Creado: src/${schemaName}/${nameFolders(
+            tableName,
+          )}/${nameFolders(tableName)}.entity.ts`,
+        ) + colors().green('✔'),
+      );
+    }
+  });
 }
 
 /**
@@ -330,7 +390,7 @@ function createFolderTable(nameSchema, nameTable) {
  * ejemplo roles_user = RolesUser
  * @todo
  */
-function namePrimaryMayus(name: string) {
+function namePrimaryMayus(name) {
   const _name = name.split('_');
   let newString = '';
   _name.forEach(element => {
@@ -345,7 +405,7 @@ function namePrimaryMayus(name: string) {
  * ejemplo roles_user = roles-user
  * @todo
  */
-function nameFolders(name: string) {
+function nameFolders(name) {
   const newString = name.replace('_', '-');
   return newString;
 }

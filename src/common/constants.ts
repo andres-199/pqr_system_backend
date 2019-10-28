@@ -4,7 +4,7 @@ const dbConfig = {
   port: 5432,
   username: 'postgres',
   password: 'bdaserti',
-  database: 'practicantes',
+  database: 'yonarp',
   user: 'postgres',
 };
 
