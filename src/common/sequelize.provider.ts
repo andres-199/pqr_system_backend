@@ -28,7 +28,9 @@ function _getModels(path = 'src') {
 
   return models;
 }
-
+export const gola = {
+	hola: 'hola'
+}
 export const sequelizeProvider = {
   provide: 'Sequelize',
   useFactory: async () => {

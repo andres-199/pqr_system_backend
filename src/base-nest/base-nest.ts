@@ -1,10 +1,10 @@
-// import { sequelizeProvider } from '../common/sequelize.provider';
 const pgStructure = require('pg-structure');
 const Handlebars = require('handlebars');
 const pluralize = require('pluralize');
 var dir = './src/';
 var inquirer = require('inquirer');
 var fs = require('fs');
+
 
 inquirer
   .prompt([
