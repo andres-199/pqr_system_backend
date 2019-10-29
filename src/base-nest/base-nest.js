@@ -23,6 +23,7 @@ colsFormat['double precision'] = 'number';
 colsFormat['bigint'] = 'number';
 colsFormat['real'] = 'number';
 
+
 inquirer
   .prompt([
     {
