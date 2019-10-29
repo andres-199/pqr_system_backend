@@ -12,7 +12,7 @@ function _getModels(path = 'src') {
     if (isDirectory) {
       models.push(..._getModels(newPath));
     } else {
-      const isEntity = dir.includes('entity');
+      const isEntity = dir.includes('entity.ts');
 
       if (isEntity) {
         const model = require(newPath.replace('src/', '../'));
