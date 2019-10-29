@@ -1,11 +1,14 @@
-`import { Table, Model, Column, CreatedAt, UpdatedAt, DataType } from 'sequelize-typescript'
+import { Table, Model, Column, DataType{{#if hasMany}}, HasMany{{/if}}{{#if belongsTo}}, BelongsTo{{/if}} } from 'sequelize-typescript'
+{{#each imports}}
+import { {{name}} } from '{{path}}'
+{{/each}}
 
 @Table({
-	schema: '${answers.schema}',
-	tableName: '${answers.table}',
+	schema: '{{schemaName}}',
+	tableName: '{{tableName}}',
 })
 
-export class ${MaysPrimera(answers.entity)} extends Model<${MaysPrimera(answers.entity)}> {
+export class {{className}} extends Model<{{className}}> {
 
 	@Column({
   	type: DataType.INTEGER,
@@ -15,11 +18,25 @@ export class ${MaysPrimera(answers.entity)} extends Model<${MaysPrimera(answers.
   	field: 'id',
 	})
 	id: number
-${entityFields()}
 
-	@CreatedAt
-	createdAt: Date
 
-	@UpdatedAt
-	updatedAt: Date
+
+	{{#each columns}}
+  @Column{{#specialType}}({ type: DataType.{{type}} }){{/specialType}}
+	{{name}}: {{type}}
+
+	{{/each}}
+
+	{{#each belongsTo}}
+	@BelongsTo(() => {{name}}, { foreignKey: '{{foreignKey}}', as: '{{name}}'})
+	{{name}}: {{name}}
+
+	{{/each}}
+
+	{{#each hasMany}}
+  @HasMany(() => {{name}}, { as: '{{name}}', foreignKey: '{{foreignKey}}' })
+	{{name}}: {{name}}[]
+
+	{{/each}}
+
 }

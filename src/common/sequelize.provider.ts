@@ -1,4 +1,4 @@
-import { Sequelize, Model } from 'sequelize-typescript';
+import { Sequelize } from 'sequelize-typescript';
 
 function _getModels(path = 'src') {
   const models = [];
@@ -28,21 +28,17 @@ function _getModels(path = 'src') {
 
   return models;
 }
-export const gola = {
-	hola: 'hola'
-}
+
+const constants = require('./constants');
+const dbConfig = constants.dbConfig;
+
 export const sequelizeProvider = {
   provide: 'Sequelize',
   useFactory: async () => {
     const sequelize = new Sequelize({
-			dialect: 'postgres',
-			host: '198.74.59.59',
-			port: 5432,
-			username: 'postgres',
-			password: 'bdaserti',
-			database: 'practicantes',
-			models: _getModels(),
-		});
+      ...dbConfig,
+      models: _getModels(),
+    });
     return sequelize;
   },
 };
