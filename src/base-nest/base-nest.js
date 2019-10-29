@@ -73,7 +73,7 @@ function structureModelEsquema(nameSchema) {
     const tables = db.schemas.get(nameSchema).tables;
 
     for (const table of tables.values()) {
-      nameTables.push({ path: table.name, name: namePrimaryMayus(table.name) });
+       nameTables.push({ path: table.name, name: namePrimaryMayus(table.name) });
       createFolderTable(nameSchema, table.name);
       createMiddlewares(nameSchema, table.name);
       createSubModulos(nameSchema, table.name);
@@ -110,18 +110,90 @@ function _getTemplate(templateName) {
   return template;
 }
 
-function createEntity(schemaName, table) {
+/**
+ * @todo "belongsToMany relations"
+ */
+function _getRelations(table) {
+  const hasMany = [];
+  const belongsTo = [];
+  const belongsToMany = [];
+
   /**
-   * set relations
+   * @hasMany
+   * 1 to m
    */
-  for (const relation of table.hasManyTables) {
-    // todo....
+  for (const relation of table.o2mRelations) {
+    const tableName = relation.targetTable.name;
+    const name = singularword(namePrimaryMayus(tableName));
+    for (const fk of relation.constraint.referencedColumnsBy) {
+      const foreignKey = fk[0];
+      hasMany.push({ name, foreignKey, tableName });
+    }
   }
 
+  /**
+   * @belongsTo
+   * m to 1
+   */
+  for (const relation of table.m2oRelations) {
+    const tableName = relation.targetTable.name;
+    const name = singularword(namePrimaryMayus(tableName));
+    for (const fk of relation.constraint.referencedColumnsBy) {
+      const foreignKey = fk[0];
+      belongsTo.push({ name, foreignKey, tableName });
+    }
+  }
+
+  /**
+   * @todo
+   * @belongsToMany
+   * m to m
+   */
+  for (const relation of table.m2mRelations) {
+   // console.log('belongsToMany => ', relation);
+  }
+
+  const relations = { hasMany, belongsTo, belongsToMany };
+  const imports = _getImportsForEntity(relations);
+  return { ...relations, imports };
+}
+
+/**
+ * @todo "verify if import exists"
+ * @todo "verify if make reference to this"
+ */
+function _getImportsForEntity(relations) {
+  const imports = [];
+  for (const relationType in relations) {
+    if (relations.hasOwnProperty(relationType)) {
+      const _relations = relations[relationType];
+      for (const relation of _relations) {
+        /**
+         * @todo "verify if import exists"
+         * @todo "verify if make reference to this"
+         */
+        const folderName = nameFolders(relation.tableName);
+        const name = relation.name;
+        const path = `../${folderName}/${folderName}.entity`;
+        imports.push({ name, path });
+      }
+    }
+  }
+
+  return imports;
+}
+
+function createEntity(schemaName, table) {
   const columns = _getColsForEntity(table);
   const tableName = table.name;
-  const className = namePrimaryMayus(tableName);
-  const context = { schemaName, tableName, columns, className };
+  const className = singularword(namePrimaryMayus(tableName));
+  const context = {
+    schemaName,
+    tableName,
+    columns,
+    className,
+    ..._getRelations(table),
+  };
 
   const template = _getTemplate('entity');
   const builder = Handlebars.compile(template);

@@ -1,4 +1,7 @@
-import { Table, Model, Column, DataType } from 'sequelize-typescript'
+import { Table, Model, Column, DataType{{#if hasMany}}, HasMany{{/if}}{{#if belongsTo}}, BelongsTo{{/if}} } from 'sequelize-typescript'
+{{#each imports}}
+import { {{name}} } from '{{path}}'
+{{/each}}
 
 @Table({
 	schema: '{{schemaName}}',
@@ -19,8 +22,20 @@ export class {{className}} extends Model<{{className}}> {
 
 
 	{{#each columns}}
-   @Column{{#specialType}}({ type: DataType.{{type}} }){{/specialType}}
-	 {{name}}: {{type}};
+  @Column{{#specialType}}({ type: DataType.{{type}} }){{/specialType}}
+	{{name}}: {{type}}
+
+	{{/each}}
+
+	{{#each belongsTo}}
+	@BelongsTo(() => {{name}}, { foreignKey: '{{foreignKey}}', as: '{{name}}'})
+	{{name}}: {{name}}
+
+	{{/each}}
+
+	{{#each hasMany}}
+  @HasMany(() => {{name}}, { as: '{{name}}', foreignKey: '{{foreignKey}}' })
+	{{name}}: {{name}}[]
 
 	{{/each}}
 

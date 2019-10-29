@@ -17,8 +17,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "generate": "node src/common/create-component.ts",
-    "generateV2": "node src/base-nest/base-nest.js"
+    "generate": "node src/base-nest/base-nest.js"
   },
   "dependencies": {
     "@nestjs/common": "^6.0.0",
