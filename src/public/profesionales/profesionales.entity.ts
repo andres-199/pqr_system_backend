@@ -32,7 +32,7 @@ export class Profesional extends Model<Profesional> {
 	correo: string
 
   @Column
-	telefono: number
+	telefono: string
 
   @Column
 	createdAt: Date
