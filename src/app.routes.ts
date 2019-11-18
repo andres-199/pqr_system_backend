@@ -1,3 +1,4 @@
-import { Routes } from 'nest-router';
+import { Routes } from 'nest-router'
+import { publicRoutes } from './public/public.router'
 
-export const routes: Routes = [];
+export const routes: Routes = [{ path: 'public', children: publicRoutes }]
