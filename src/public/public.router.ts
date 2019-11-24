@@ -6,7 +6,9 @@ import { PqrsModule } from './pqrs/pqrs.module'
 import { PrediosModule } from './predios/predios.module'
 import { ProductosAGestionarModule } from './productos_a_gestionar/productos_a_gestionar.module'
 import { ProfesionalesModule } from './profesionales/profesionales.module'
+import { RolesModule } from './roles/roles.module'
 import { TiposPqrModule } from './tipos-pqr/tipos-pqr.module'
+import { UsuariosModule } from './usuarios/usuarios.module'
 
 export const publicRoutes: Routes = [
   { path: 'campos', module: CamposModule },
@@ -16,5 +18,7 @@ export const publicRoutes: Routes = [
   { path: 'predios', module: PrediosModule },
   { path: 'productos_a_gestionar', module: ProductosAGestionarModule },
   { path: 'profesionales', module: ProfesionalesModule },
+  { path: 'roles', module: RolesModule },
   { path: 'tipos_pqr', module: TiposPqrModule },
+  { path: 'usuarios', module: UsuariosModule },
 ]

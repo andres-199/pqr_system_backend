@@ -33,7 +33,7 @@ export class CommonFunctionsController {
     const data = await this.commonService.findList(parameters)
     parameters.attributes = ['id', 'name']
     console.log(this.concatenaField(params, data))
-    return
+    return this.concatenaField(params, data)
   }
 
   @Get('/:id')

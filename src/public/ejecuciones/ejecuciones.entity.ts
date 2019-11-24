@@ -42,6 +42,12 @@ export class Ejecucion extends Model<Ejecucion> {
   @Column
   requiere_accion_posterior: boolean
 
+  @Column
+  createdAt: Date
+
+  @Column
+  updatedAt: Date
+
   @BelongsTo(() => Pqr, { foreignKey: 'pqr_id', as: 'Pqr' })
   Pqr: Pqr
 }

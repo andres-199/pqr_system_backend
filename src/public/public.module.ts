@@ -6,7 +6,9 @@ import { PqrsModule } from './pqrs/pqrs.module'
 import { PrediosModule } from './predios/predios.module'
 import { ProductosAGestionarModule } from './productos_a_gestionar/productos_a_gestionar.module'
 import { ProfesionalesModule } from './profesionales/profesionales.module'
+import { RolesModule } from './roles/roles.module'
 import { TiposPqrModule } from './tipos-pqr/tipos-pqr.module'
+import { UsuariosModule } from './usuarios/usuarios.module'
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { TiposPqrModule } from './tipos-pqr/tipos-pqr.module'
     PrediosModule,
     ProductosAGestionarModule,
     ProfesionalesModule,
+    RolesModule,
     TiposPqrModule,
+    UsuariosModule,
   ],
 })
 export class PublicModule {}

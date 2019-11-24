@@ -5,7 +5,7 @@ import { Pqr } from '../pqrs/pqrs.entity'
   schema: 'public',
   tableName: 'tipos_pqr',
 })
-export class TipoPQR extends Model<TipoPQR> {
+export class TipoPqr extends Model<TipoPqr> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,

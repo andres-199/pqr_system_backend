@@ -1,11 +1,11 @@
 import { Table, Model, Column, DataType, HasMany } from 'sequelize-typescript'
-import { Pqr } from '../pqrs/pqrs.entity'
+import { Usuario } from '../usuarios/usuarios.entity'
 
 @Table({
   schema: 'public',
-  tableName: 'predios',
+  tableName: 'roles',
 })
-export class Predio extends Model<Predio> {
+export class Rol extends Model<Rol> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -16,13 +16,7 @@ export class Predio extends Model<Predio> {
   id: number
 
   @Column
-  codigo: string
-
-  @Column
   nombre: string
-
-  @Column
-  requirente: string
 
   @Column
   createdAt: Date
@@ -30,6 +24,6 @@ export class Predio extends Model<Predio> {
   @Column
   updatedAt: Date
 
-  @HasMany(() => Pqr, { as: 'Pqr', foreignKey: 'predio_id' })
-  Pqr: Pqr[]
+  @HasMany(() => Usuario, { as: 'Usuario', foreignKey: 'rol_id' })
+  Usuario: Usuario[]
 }

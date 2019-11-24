@@ -10,7 +10,7 @@ export class TiposPqrMiddleware implements NestMiddleware {
   ) {}
 
   use(req: any, res: any, next: () => void) {
-    const model = this.sequelize.models.TipoPQR
+    const model = this.sequelize.models.TipoPqr
     if (model) {
       this.commonService.model = model;
       next();

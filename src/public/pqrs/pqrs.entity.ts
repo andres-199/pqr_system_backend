@@ -12,7 +12,7 @@ import { Estado } from '../estados/estados.entity'
 import { Predio } from '../predios/predios.entity'
 import { ProductoAGestionar } from '../productos_a_gestionar/productos_a_gestionar.entity'
 import { Profesional } from '../profesionales/profesionales.entity'
-import { TipoPQR } from '../tipos-pqr/tipos-pqr.entity'
+import { TipoPqr } from '../tipos-pqr/tipos-pqr.entity'
 
 @Table({
   schema: 'public',
@@ -97,8 +97,8 @@ export class Pqr extends Model<Pqr> {
   })
   Profesional: Profesional
 
-  @BelongsTo(() => TipoPQR, { foreignKey: 'tipo_pqr_id', as: 'TipoPQR' })
-  TipoPQR: TipoPQR
+  @BelongsTo(() => TipoPqr, { foreignKey: 'tipo_pqr_id', as: 'TipoPqr' })
+  TipoPqr: TipoPqr
 
   @HasMany(() => Ejecucion, { as: 'Ejecucion', foreignKey: 'pqr_id' })
   Ejecucion: Ejecucion[]

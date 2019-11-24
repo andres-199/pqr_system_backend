@@ -1,49 +1,52 @@
-import { Table, Model, Column, DataType, HasMany } from 'sequelize-typescript'
+import {
+  Table,
+  Model,
+  Column,
+  DataType,
+  HasMany,
+  HasOne,
+} from 'sequelize-typescript'
 import { Pqr } from '../pqrs/pqrs.entity'
+import { Usuario } from '../usuarios/usuarios.entity'
 
 @Table({
-	schema: 'public',
-	tableName: 'profesionales',
+  schema: 'public',
+  tableName: 'profesionales',
 })
-
 export class Profesional extends Model<Profesional> {
-
-	@Column({
-  	type: DataType.INTEGER,
-  	autoIncrement: true,
-  	primaryKey: true,
-  	unique: true,
-  	field: 'id',
-	})
-	id: number
-
-
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    unique: true,
+    field: 'id',
+  })
+  id: number
 
   @Column
-	codigo: number
+  codigo: number
 
   @Column
-	nombres: string
+  nombres: string
 
   @Column
-	apellidos: string
+  apellidos: string
 
   @Column
-	correo: string
+  correo: string
 
   @Column
-	telefono: string
+  telefono: string
 
   @Column
-	createdAt: Date
+  createdAt: Date
 
   @Column
-	updatedAt: Date
-
-
+  updatedAt: Date
 
   @HasMany(() => Pqr, { as: 'Pqr', foreignKey: 'profesional_id' })
-	Pqr: Pqr[]
+  Pqr: Pqr[]
 
-
+  @HasOne(() => Usuario, { as: 'Usuario', foreignKey: 'profesional_id' })
+  Usuario: Usuario
 }
