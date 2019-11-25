@@ -30,6 +30,9 @@ export class Profesional extends Model<Profesional> {
   nombres: string
 
   @Column
+  cargo: string
+
+  @Column
   apellidos: string
 
   @Column
