@@ -9,6 +9,8 @@ import { ProfesionalesModule } from './profesionales/profesionales.module'
 import { RolesModule } from './roles/roles.module'
 import { TiposPqrModule } from './tipos-pqr/tipos-pqr.module'
 import { UsuariosModule } from './usuarios/usuarios.module'
+import { ContratosModule } from './contratos/contratos.module'
+import { FlowModule } from './flow/flow.module'
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { UsuariosModule } from './usuarios/usuarios.module'
     RolesModule,
     TiposPqrModule,
     UsuariosModule,
+    ContratosModule,
+    FlowModule,
   ],
 })
 export class PublicModule {}

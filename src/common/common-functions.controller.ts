@@ -28,11 +28,9 @@ export class CommonFunctionsController {
 
   @Get('/list')
   public async findList(@Query() params: any) {
-    console.log('llegando')
     const parameters = this.util.getParameters(params)
     const data = await this.commonService.findList(parameters)
     parameters.attributes = ['id', 'name']
-    console.log(this.concatenaField(params, data))
     return this.concatenaField(params, data)
   }
 
